@@ -125,8 +125,8 @@ if(mirrorType != "github"){
         nixPrefetch(p["Package"], p["Version"])
     })
 } else {
-    pkgs <- pkgs[order(Package)]
     pkgs <- githubPackages
+    pkgs <- pkgs[order(Package)]    
 }
     
 nix <- apply(pkgs, 1, function(p){
@@ -148,7 +148,7 @@ if (mirrorType %in% c("cran", "github")) { cat("{ snapshot = \"", paste(snapshot
 cat(";\n")
 cat("in with self; {\n")
 if(mirrorType == "github" & exists("oldPkgs")){
-    write.table(oldPkgs, row.names = FALSE, col.names = FALSE)
+    cat(apply(oldPkgs, 1, paste0, collapse = '"'), sep = "\n")
 }
 cat(paste(nix, collapse="\n"), "\n", sep="")
 cat("}\n")
