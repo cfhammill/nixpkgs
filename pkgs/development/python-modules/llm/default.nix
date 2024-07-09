@@ -5,10 +5,22 @@
   fetchFromGitHub,
   makeWrapper,
   pytestCheckHook,
-  python3,
   pythonOlder,
   ruff,
   setuptools,
+  python3,
+  click-default-group,
+  openai,
+  pip,
+  pluggy,
+  pydantic,
+  python-ulid,
+  pyyaml,
+  sqlite-migrate,
+  sqlite-utils,
+  cogapp,
+  numpy,
+  pytest-httpx
 }:
 let
   llm = buildPythonPackage rec {
@@ -29,7 +41,7 @@ let
 
     nativeBuildInputs = [ setuptools ];
 
-    propagatedBuildInputs = with python3.pkgs; [
+    propagatedBuildInputs = [
       click-default-group
       numpy
       openai
@@ -43,7 +55,7 @@ let
       sqlite-utils
     ];
 
-    nativeCheckInputs = with python3.pkgs; [
+    nativeCheckInputs = [
       cogapp
       numpy
       pytest-httpx
