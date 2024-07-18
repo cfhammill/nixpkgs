@@ -10025,6 +10025,8 @@ self: super: with self; {
 
   prodict = callPackage ../development/python-modules/prodict { };
 
+  prometheus-fastapi-instrumentator =  callPackage ../development/python-modules/prometheus-fastapi-instrumentator { };
+
   prometheus-pandas = callPackage ../development/python-modules/prometheus-pandas { };
 
   prophet = callPackage ../development/python-modules/prophet { };
