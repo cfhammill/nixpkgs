@@ -62,10 +62,10 @@ buildPythonPackage rec {
   format = "pyproject";
 
   src = fetchFromGitHub {
-    owner = "vllm-project";
+    owner = "cfhammill";
     repo = pname;
-    rev = "v${version}";
-    hash = "sha256-CUyYTmV1+Clt/npBVJlm0lhqb4vDD8MYABnw62fZVVI=";
+    rev = "mig-fix";
+    hash = "sha256-sqJVqYnHJWEOUbPalDvWfrsKjTsgDEdfcK0fy7fQEx0=";
   };
 
   # Otherwise it tries to enumerate host supported ROCM gfx archs, and that is not possible due to sandboxing.
