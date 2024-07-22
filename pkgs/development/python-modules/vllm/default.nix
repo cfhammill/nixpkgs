@@ -44,14 +44,13 @@
   rocmSupport ? config.rocmSupport,
   rocmPackages ? { },
   gpuTargets ? [ ],
-}:
+}@args:
 
 let
-  stdenv_pkg = stdenv;
   cutlass = fetchFromGitHub {
     owner = "NVIDIA";
     repo = "cutlass";
-    rev = "v3.5.0";
+    rev = "refs/tags/v3.5.0";
     sha256 = "sha256-D/s7eYsa5l/mfx73tE4mnFcTQdYqGmXa9d9TCryw4e4=";
   };
 in
@@ -59,7 +58,7 @@ in
 buildPythonPackage rec {
   pname = "vllm";
   version = "0.5.2";
-  format = "pyproject";
+  pyproject = true;
 
   src = fetchFromGitHub {
     owner = "cfhammill";
@@ -95,14 +94,14 @@ buildPythonPackage rec {
     '';
 
   nativeBuildInputs = [
+    cmake
+    ninja
     packaging
+    pythonRelaxDepsHook
     setuptools
     torch
     wheel
     which
-    cmake
-    ninja
-    pythonRelaxDepsHook #unclear why this is needed, but it seems to be
   ] ++ lib.optionals rocmSupport [ rocmPackages.hipcc ];
 
   buildInputs =
@@ -130,40 +129,40 @@ buildPythonPackage rec {
 
   propagatedBuildInputs =
     [
-      psutil
-      ray
-      pandas
-      pyarrow
-      sentencepiece
-      numpy
-      torch
-      transformers
-      outlines
-      xformers
-      fastapi
-      uvicorn
-      pydantic
       aioprometheus
-      openai
-      pyzmq
-      tiktoken
-      torchvision
-      py-cpuinfo
+      fastapi
       lm-format-enforcer
+      numpy
+      openai
+      outlines
+      pandas
       prometheus-fastapi-instrumentator
+      psutil
+      py-cpuinfo
+      pyarrow
+      pydantic
+      pyzmq
+      ray
+      sentencepiece
+      tiktoken
+      torch
+      torchvision
+      transformers
+      uvicorn
+      xformers
     ]
     ++ uvicorn.optional-dependencies.standard
     ++ aioprometheus.optional-dependencies.starlette
     ++ lib.optionals cudaSupport [
-      pynvml
       cupy
+      pynvml
     ];
 
   dontUseCmakeConfigure=true;
 
   pythonRelaxDeps = true;
 
-  stdenv = if cudaSupport then cudaPackages.backendStdenv else stdenv;
+  stdenv = if cudaSupport then cudaPackages.backendStdenv else args.stdenv;
 
   pythonImportsCheck = [ "vllm" ];
 
