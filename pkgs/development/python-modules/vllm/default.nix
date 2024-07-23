@@ -74,10 +74,6 @@ buildPythonPackage rec {
     lib.strings.concatStringsSep ";" rocmPackages.clr.gpuTargets
   );
 
-  # cupy-cuda12x is the same wheel as cupy, but built with cuda dependencies, we already have it set up
-  # like that in nixpkgs. Version upgrade is due to upstream shenanigans
-  # https://github.com/vllm-project/vllm/pull/2845/commits/34a0ad7f9bb7880c0daa2992d700df3e01e91363
-  #
   # hipcc --version works badly on NixOS due to unresolved paths.
   postPatch =
     ''
