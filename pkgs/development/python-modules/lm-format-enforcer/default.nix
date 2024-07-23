@@ -5,7 +5,7 @@
   pydantic,
   interegular,
   pyyaml,
-  poetry-core
+  poetry-core,
 }:
 
 buildPythonPackage rec {
@@ -21,21 +21,17 @@ buildPythonPackage rec {
   };
 
   nativeBuildInputs = [ poetry-core ];
-  propagatedBuildInputs =
-    [
-      pydantic
-      interegular
-      pyyaml
-    ];
+  propagatedBuildInputs = [
+    pydantic
+    interegular
+    pyyaml
+  ];
 
   meta = with lib; {
     description = "Enforce the output format (JSON Schema, Regex etc) of a language model";
     changelog = "https://github.com/noamgat/lm-format-enforcer/releases/tag/v${version}";
     homepage = "https://github.com/noamgat/lm-format-enforcer";
     license = licenses.mit;
-    maintainers = with maintainers; [
-      cfhammill
-    ];
+    maintainers = with maintainers; [ cfhammill ];
   };
 }
-

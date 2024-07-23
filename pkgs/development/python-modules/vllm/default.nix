@@ -79,19 +79,22 @@ buildPythonPackage rec {
   # https://github.com/vllm-project/vllm/pull/2845/commits/34a0ad7f9bb7880c0daa2992d700df3e01e91363
   #
   # hipcc --version works badly on NixOS due to unresolved paths.
-  postPatch = ''
-    substituteInPlace setup.py \
-      --replace 'cmake_args = [' 'cmake_args = ["-DFETCHCONTENT_SOURCE_DIR_CUTLASS=${cutlass}",'
-    '' +
-    lib.optionalString rocmSupport ''
+  postPatch =
+    ''
+      substituteInPlace setup.py \
+        --replace 'cmake_args = [' 'cmake_args = ["-DFETCHCONTENT_SOURCE_DIR_CUTLASS=${cutlass}",'
+    ''
+    + lib.optionalString rocmSupport ''
       substituteInPlace setup.py \
         --replace "'hipcc', '--version'" "'${writeShellScript "hipcc-version-stub" "echo HIP version: 0.0"}'"
     '';
 
-  preBuild = lib.optionalString rocmSupport ''
+  preBuild =
+    lib.optionalString rocmSupport ''
       export ROCM_HOME=${rocmPackages.clr}
       export PATH=$PATH:${rocmPackages.hipcc}
-    '' + lib.optionalString cudaSupport ''
+    ''
+    + lib.optionalString cudaSupport ''
       export CUDA_HOME=${cudaPackages.cuda_nvcc}
     '';
 
@@ -107,8 +110,9 @@ buildPythonPackage rec {
   ] ++ lib.optionals rocmSupport [ rocmPackages.hipcc ];
 
   buildInputs =
-    (lib.optionals cudaSupport
-      (with cudaPackages; [
+    (lib.optionals cudaSupport (
+      with cudaPackages;
+      [
         cuda_cudart # cuda_runtime.h, -lcudart
         cuda_cccl
         libcusparse # cusparse.h
@@ -116,7 +120,8 @@ buildPythonPackage rec {
         cuda_nvcc
         cuda_nvtx
         libcublas
-      ]))
+      ]
+    ))
     ++ (lib.optionals rocmSupport (
       with rocmPackages;
       [
@@ -159,7 +164,7 @@ buildPythonPackage rec {
       pynvml
     ];
 
-  dontUseCmakeConfigure=true;
+  dontUseCmakeConfigure = true;
 
   pythonRelaxDeps = true;
 
