@@ -67,6 +67,8 @@ buildPythonPackage rec {
     hash = "sha256-sqJVqYnHJWEOUbPalDvWfrsKjTsgDEdfcK0fy7fQEx0=";
   };
 
+  stdenv = if cudaSupport then cudaPackages.backendStdenv else args.stdenv;
+
   # Otherwise it tries to enumerate host supported ROCM gfx archs, and that is not possible due to sandboxing.
   PYTORCH_ROCM_ARCH = lib.optionalString rocmSupport (
     lib.strings.concatStringsSep ";" rocmPackages.clr.gpuTargets
@@ -90,14 +92,14 @@ buildPythonPackage rec {
       export ROCM_HOME=${rocmPackages.clr}
       export PATH=$PATH:${rocmPackages.hipcc}
     '' + lib.optionalString cudaSupport ''
-      export CUDA_HOME=${cudaPackages.cudatoolkit}
+      export CUDA_HOME=${cudaPackages.cuda_nvcc}
     '';
 
   nativeBuildInputs = [
     cmake
     ninja
     packaging
-    pythonRelaxDepsHook
+    pythonRelaxDepsHook # not sure why this is needed, but it is
     setuptools
     torch
     wheel
@@ -105,17 +107,16 @@ buildPythonPackage rec {
   ] ++ lib.optionals rocmSupport [ rocmPackages.hipcc ];
 
   buildInputs =
-    (lib.optionals cudaSupport (
-      with cudaPackages;
-      [
-        cudatoolkit
-        cuda_cudart.dev # cuda_runtime.h, -lcudart
-        cuda_cudart.lib
-        cuda_cccl.dev # <thrust/*>
-        libcusparse.dev # cusparse.h
+    (lib.optionals cudaSupport
+      (with cudaPackages; [
+        cuda_cudart # cuda_runtime.h, -lcudart
+        cuda_cccl
+        libcusparse # cusparse.h
         libcusolver # cusolverDn.h
-      ]
-    ))
+        cuda_nvcc
+        cuda_nvtx
+        libcublas
+      ]))
     ++ (lib.optionals rocmSupport (
       with rocmPackages;
       [
@@ -161,8 +162,6 @@ buildPythonPackage rec {
   dontUseCmakeConfigure=true;
 
   pythonRelaxDeps = true;
-
-  stdenv = if cudaSupport then cudaPackages.backendStdenv else args.stdenv;
 
   pythonImportsCheck = [ "vllm" ];
 
