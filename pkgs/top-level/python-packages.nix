@@ -13607,6 +13607,8 @@ self: super: with self; {
 
   rsa = callPackage ../development/python-modules/rsa { };
 
+  rsconnect-python = callPackage ../development/python-modules/rsconnect-python { };
+
   rsskey = callPackage ../development/python-modules/rsskey { };
 
   rst2ansi = callPackage ../development/python-modules/rst2ansi { };
