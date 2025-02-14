@@ -1,10 +1,10 @@
 {
   lib,
   buildPythonPackage,
-  cython_0,
+  cython,
   oldest-supported-numpy,
   setuptools,
-  fetchPypi,
+  fetchFromGitHub,
   mock,
   numpy,
   scipy,
@@ -12,6 +12,7 @@
   pyemd,
   pytestCheckHook,
   pythonOlder,
+  pythonRelaxDepsHook
 }:
 
 buildPythonPackage rec {
@@ -19,18 +20,18 @@ buildPythonPackage rec {
   version = "4.3.3";
   pyproject = true;
 
-  # C code generated with CPython3.12 does not work cython_0.
-  disabled = !(pythonOlder "3.12");
-
-  src = fetchPypi {
-    inherit pname version;
-    hash = "sha256-hIUgdqaj2I19rFviReJMIcO4GbVl4UwbYfo+Xudtz1c=";
+  src = fetchFromGitHub {
+    owner = "piskvorky";
+    repo = "gensim";
+    ref = "release-4.3.3";
+    hash = "sha256-hIagdqaj2I19rFviReJMIcO4GbVl4UwbYfo+Xudtz1c=";
   };
 
   build-system = [
-    cython_0
+    cython
     oldest-supported-numpy
     setuptools
+    pythonRelaxDepsHook
   ];
 
   dependencies = [
@@ -44,6 +45,10 @@ buildPythonPackage rec {
     pyemd
     pytestCheckHook
   ];
+
+  postPatch = ''
+    substituteInPlace pyproject.toml --replace "Cython>=0.29.32,<3.0.0" "Cython"
+  '';
 
   pythonRelaxDeps = [
     "scipy"
