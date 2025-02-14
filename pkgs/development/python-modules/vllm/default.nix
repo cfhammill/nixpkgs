@@ -201,10 +201,10 @@ buildPythonPackage rec {
   stdenv = if cudaSupport then cudaPackages.backendStdenv else args.stdenv;
 
   src = fetchFromGitHub {
-    owner = "vllm-project";
+    owner = "cfhammill";
     repo = pname;
-    tag = "v${version}";
-    hash = "sha256-j59DpNuO5TgGD6UVGzueSTumd7mDMB4l1QytV3rFIJE=";
+    rev = "fix-mig-7_2";
+    hash = "sha256-BhUh3JxGnMG2gW96jAL7MABHe5tVdj82FYjEgmNXRB8=";
   };
 
   patches = [
