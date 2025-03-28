@@ -57,6 +57,10 @@
   blake3,
   depyf,
   opencv-python-headless,
+  python-json-logger,
+  llguidance,
+  cachetools,
+  python-multipart,
 
   config,
 
@@ -197,16 +201,16 @@ in
 
 buildPythonPackage rec {
   pname = "vllm";
-  version = "0.7.3";
+  version = "0.8.2";
   pyproject = true;
 
   stdenv = if cudaSupport then cudaPackages.backendStdenv else args.stdenv;
 
   src = fetchFromGitHub {
-    owner = "vllm-project";
+    owner = "cfhammill";
     repo = pname;
-    tag = "v${version}";
-    hash = "sha256-gudlikAjwZNkniKRPJYm7beoti8eHp5LaRV2/UNEibo=";
+    rev = "mig-fix-0_8_2";
+    hash = "sha256-Ey0AJ1hahG+Wb9dXbpepnQxXsVV2q/noVnoqRlGX5qE=";
   };
 
   patches = [
@@ -227,8 +231,8 @@ buildPythonPackage rec {
       # Relax torch dependency manually because the nonstandard requirements format
       # is not caught by pythonRelaxDeps
       substituteInPlace requirements*.txt pyproject.toml \
-        --replace-warn 'torch==2.5.1' 'torch==${lib.getVersion torch}' \
-        --replace-warn 'torch == 2.5.1' 'torch == ${lib.getVersion torch}'
+        --replace-warn 'torch==2.6.0' 'torch==${lib.getVersion torch}' \
+        --replace-warn 'torch == 2.6.0' 'torch == ${lib.getVersion torch}'
     ''
     + lib.optionalString (nccl == null) ''
       # On platforms where NCCL is not supported (e.g. Jetson), substitute Gloo (provided by Torch)
@@ -292,10 +296,13 @@ buildPythonPackage rec {
     [
       aioprometheus
       blake3
+      cachetools
       depyf
       fastapi
+      llguidance
       lm-format-enforcer
       numpy
+      numba
       openai
       opencv-python-headless
       outlines
@@ -305,6 +312,8 @@ buildPythonPackage rec {
       py-cpuinfo
       pyarrow
       pydantic
+      python-multipart
+      python-json-logger
       pyzmq
       ray
       sentencepiece
