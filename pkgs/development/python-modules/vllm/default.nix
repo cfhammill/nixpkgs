@@ -95,15 +95,15 @@ let
   vllm-flash-attn = stdenv.mkDerivation {
     pname = "vllm-flash-attn";
     # https://github.com/vllm-project/flash-attention/blob/${src.rev}/vllm_flash_attn/__init__.py
-    version = "2.7.2.post1";
+    version = "2.7.3.post1";
 
     # see CMakeLists.txt, grepping for GIT_TAG near vllm-flash-attn
     # https://github.com/vllm-project/vllm/blob/${version}/CMakeLists.txt
     src = fetchFromGitHub {
       owner = "vllm-project";
       repo = "flash-attention";
-      rev = "720c94869cf2e0ff5a706e9c7f1dce0939686ade";
-      hash = "sha256-UXbBfzBCOBjRRAAOhIzt0E27VjC6xu4G1CkZfu9LKRs=";
+      rev = "d637d8927a35922ce6f6c0dff6dd3f765ed71f3c";
+      hash = "sha256-HsXmhgkSTOHZO8gWrCld5rd7CxxHWlWaCowQNPbEPpI=";
     };
 
     dontConfigure = true;
@@ -112,6 +112,7 @@ let
     buildPhase = ''
       rm -rf csrc/cutlass
       ln -sf ${cutlass} csrc/cutlass
+      sed -i 's/set(FA3_ENABLED ON/set(FA3_ENABLED OFF/' CMakeLists.txt
     '';
 
     installPhase = ''
@@ -210,7 +211,7 @@ buildPythonPackage rec {
     owner = "cfhammill";
     repo = pname;
     rev = "mig-fix-0_8_2";
-    hash = "sha256-Ey0AJ1hahG+Wb9dXbpepnQxXsVV2q/noVnoqRlGX5qE=";
+    hash = "sha256-EAykjMyIRqG/uva3dvR7WUy3cSF694n/xLn0JBGjpPQ=";
   };
 
   patches = [
