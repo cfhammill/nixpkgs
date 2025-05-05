@@ -3338,6 +3338,8 @@ self: super: with self; {
 
   deepdish = callPackage ../development/python-modules/deepdish { };
 
+  deepeval = callPackage ../development/python-modules/deepeval { };
+
   deepface = callPackage ../development/python-modules/deepface { };
 
   deepl = callPackage ../development/python-modules/deepl { };
