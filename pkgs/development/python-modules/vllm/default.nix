@@ -61,6 +61,10 @@
   llguidance,
   cachetools,
   python-multipart,
+  opentelemetry-sdk,
+  opentelemetry-api,
+  opentelemetry-exporter-otlp,
+  opentelemetry-semantic-conventions-ai,
 
   config,
 
@@ -202,7 +206,7 @@ in
 
 buildPythonPackage rec {
   pname = "vllm";
-  version = "0.8.2";
+  version = "0.8.5";
   pyproject = true;
 
   stdenv = if cudaSupport then cudaPackages.backendStdenv else args.stdenv;
@@ -210,8 +214,8 @@ buildPythonPackage rec {
   src = fetchFromGitHub {
     owner = "cfhammill";
     repo = pname;
-    rev = "mig-fix-0_8_2";
-    hash = "sha256-EAykjMyIRqG/uva3dvR7WUy3cSF694n/xLn0JBGjpPQ=";
+    rev = "mig-fix-0_8_5";
+    hash = "sha256-oeReDfT7Mhsi43zeVm2qT8jHgepPRkBsCBtQQ3ywJmw=";
   };
 
   patches = [
@@ -306,6 +310,10 @@ buildPythonPackage rec {
       numba
       openai
       opencv-python-headless
+      opentelemetry-sdk
+      opentelemetry-api
+      opentelemetry-exporter-otlp
+      opentelemetry-semantic-conventions-ai
       outlines
       pandas
       prometheus-fastapi-instrumentator
