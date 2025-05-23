@@ -37,14 +37,14 @@
 
 buildPythonPackage rec {
   pname = "deepeval";
-  version = "2.7.9";
+  version = "2.9.0";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "confident-ai";
     repo = pname;
     tag = "v${version}";
-    hash = "sha256-Mdi/4LNIU1EtXnlXOl4pEfZBSB5lE4wy8djoWq2GWS8=";
+    hash = "sha256-muOW2Dv/JVuvg0RfvU+LprpSgGIvi6USH8wfZ5+X5cM=";
   };
 
   build-system = [
